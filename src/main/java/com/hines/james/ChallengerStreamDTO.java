@@ -1,6 +1,9 @@
 package com.hines.james;
 
-public class ChallengerStreamElementDTO {
+import lombok.Data;
+
+@Data
+public class ChallengerStreamDTO {
     private String username;
     private int wins;
     private int losses;

@@ -93,15 +93,15 @@ public class PaperRockScissorsClient {
     }
 
     @ShellMethod("Send one request. Many responses (stream) will be printed.")
-    public void challenge(int playerId, String clientId) {
+    public void challenge(String playerId, String clientId) {
         if (userIsLoggedIn()) {
             log.info("\n\n**** Request-Stream\n**** Send one request.\n**** Log responses.\n**** Type 's' to stop.");
 
             disposable = this.rsocketRequester
                 .route("challenge")
-                .data(new ChallengeRequestDTO(playerId, clientId))
-                .retrieveFlux(ChallengerStreamElementDTO.class)
-                .subscribe(challengerStreamElementDTO -> log.info("Response: {} \n(Type 's' to stop.)", challengerStreamElementDTO));
+                .data(new ChallengeRequestDTO(Integer.parseInt(playerId), clientId))
+                .retrieveFlux(ChallengerStreamDTO.class)
+                .subscribe(challengerStreamDTO -> log.info("Response: {} \n(Type 's' to stop.)", challengerStreamDTO));
         }
     }
 }
