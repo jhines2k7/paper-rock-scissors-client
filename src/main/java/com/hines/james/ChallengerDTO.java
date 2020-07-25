@@ -1,9 +1,11 @@
 package com.hines.james;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-public class ChallengerStreamDTO {
+@AllArgsConstructor
+public class ChallengerDTO {
     private String username;
     private int wins;
     private int losses;

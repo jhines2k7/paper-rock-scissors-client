@@ -92,16 +92,39 @@ public class PaperRockScissorsClient {
         }
     }
 
+    @ShellMethod("Send a request to increase the number of challengers in the challenge stream")
+    public void addChallenger(String username, String wins, String losses, String draws) throws InterruptedException {
+        if (userIsLoggedIn()) {
+            log.info("\nSending one request. Waiting for one response...");
+
+            ChallengerDTO challenger = new ChallengerDTO(
+                    username,
+                    Integer.parseInt(wins),
+                    Integer.parseInt(losses),
+                    Integer.parseInt(draws),
+                    PlayerStatus.WAITING
+            );
+
+            ChallengerDTO response = this.rsocketRequester
+                    .route("request-response")
+                    .data(challenger)
+                    .retrieveMono(ChallengerDTO.class)
+                    .block();
+
+            log.info("\nResponse was: {}", response);
+        }
+    }
+
     @ShellMethod("Send one request. Many responses (stream) will be printed.")
-    public void challenge(String playerId, String clientId) {
+    public void challenge(String playerId, String clientId) throws InterruptedException {
         if (userIsLoggedIn()) {
             log.info("\n\n**** Request-Stream\n**** Send one request.\n**** Log responses.\n**** Type 's' to stop.");
 
             disposable = this.rsocketRequester
                 .route("challenge")
                 .data(new ChallengeRequestDTO(Integer.parseInt(playerId), clientId))
-                .retrieveFlux(ChallengerStreamDTO.class)
-                .subscribe(challengerStreamDTO -> log.info("Response: {} \n(Type 's' to stop.)", challengerStreamDTO));
+                .retrieveFlux(ChallengerDTO.class)
+                .subscribe(challengerDTO -> log.info("Response: {} \n(Type 's' to stop.)", challengerDTO));
         }
     }
 }
